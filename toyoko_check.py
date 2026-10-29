@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 URL = os.environ["TARGET_URL"]
 NTFY_TOPIC = os.environ["NTFY_TOPIC"]
 
-SOLD_OUT_KEYWORDS = ["測試用"]
+SOLD_OUT_KEYWORDS = ["單人房沒有空房"]
 AVAILABLE_KEYWORDS = ["房態日曆"]
 
 
