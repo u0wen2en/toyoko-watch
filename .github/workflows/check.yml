@@ -1,0 +1,38 @@
+name: Toyoko Inn check
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # 每 15 分鐘（實際執行常會延遲）
+  workflow_dispatch:          # 允許手動按鈕執行，用來測試
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Check availability
+        env:
+          TARGET_URL: ${{ secrets.TARGET_URL }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python toyoko_check.py
+
+      - name: Upload debug files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug
+          path: |
+            debug.png
+            debug.txt
+          retention-days: 2
